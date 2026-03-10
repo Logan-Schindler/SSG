@@ -58,15 +58,15 @@ def remove_block_markdown(block_type, markdown):
         return markdown[(find_hash_count(markdown)+1):]
     elif block_type == BlockType.quote:
         for index in range(0,len(split_block_markdown)):
-            split_block_markdown[index] = split_block_markdown[1:]
+            split_block_markdown[index] = split_block_markdown[index][1:].strip()
         return '\n'.join(split_block_markdown)
     elif block_type == BlockType.unordered_list:
         for index in range(0,len(split_block_markdown)):
-            split_block_markdown[index] = re.match(r'^- ', '', split_block_markdown[index])
+            split_block_markdown[index] = re.sub(r'^- ', '', split_block_markdown[index])
         return '\n'.join(split_block_markdown)
     elif block_type == BlockType.ordered_list:
         for index in range(0,len(split_block_markdown)):
-            split_block_markdown[index] = re.match(r'^[0-9]+. ', '', split_block_markdown[index])
+            split_block_markdown[index] = re.sub(r'^[0-9]+. ', '', split_block_markdown[index])
         return '\n'.join(split_block_markdown)
     else:
         return markdown[4:-3]
@@ -74,10 +74,21 @@ def remove_block_markdown(block_type, markdown):
 def text_to_children(block_type, markdown):
     if block_type == BlockType.code:
         return [ParentNode('code', [text_node_to_html_node(TextNode(markdown, TextType.text))], None)]
-    # markdown to textnodes
-    # textnode to htmlnodes
-    textnodes = text_to_textnodes(markdown)
-    child_nodes = []
-    for textnode in textnodes:
-        child_nodes.append(text_node_to_html_node(textnode))
-    return child_nodes
+    elif block_type == BlockType.unordered_list or block_type == BlockType.ordered_list:
+        split_list = markdown.split('\n')
+        children = []
+        for line in split_list:
+            line_textnodes = text_to_textnodes(line)
+            line_htmlnodes = []
+            for textnode in line_textnodes:
+                line_htmlnodes.append(text_node_to_html_node(textnode))
+            children.append(ParentNode('li', line_htmlnodes, None))
+        return children
+    else:
+        # markdown to textnodes
+        # textnode to htmlnodes
+        textnodes = text_to_textnodes(markdown)
+        child_nodes = []
+        for textnode in textnodes:
+            child_nodes.append(text_node_to_html_node(textnode))
+        return child_nodes
