@@ -1,1 +1,1 @@
-python3 src/main.py "SSG/docs/"
+python3 src/main.py "/SSG/"
