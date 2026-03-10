@@ -62,7 +62,7 @@ def generate_pages_recursive(basepath, dir_path_content, template_path, dest_dir
             generate_pages_recursive(basepath, old_path, template_path, new_path)
 
 def main(): 
-    basepath = sys.argv[0] if len(sys.argv) > 0 else '/'  
+    basepath = sys.argv[1] if len(sys.argv) > 1 else '/'  
     copy_directory_to_dest('/home/lschindler/projects/github.com/bootdev/SSG/static','/home/lschindler/projects/github.com/bootdev/SSG/docs')
     # generate_page('/home/lschindler/projects/github.com/bootdev/SSG/content/index.md','/home/lschindler/projects/github.com/bootdev/SSG/template.html','/home/lschindler/projects/github.com/bootdev/SSG/public/index.html')
     generate_pages_recursive(basepath, '/home/lschindler/projects/github.com/bootdev/SSG/content','/home/lschindler/projects/github.com/bootdev/SSG/template.html','/home/lschindler/projects/github.com/bootdev/SSG/docs')
